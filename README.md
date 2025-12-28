@@ -36,7 +36,7 @@ HTTP-based shortcut execution and remote control for your PC.
 
 ## How It Works
 
-The application initializes a local HTTP server (defaulting to port `8075`). Each defined route corresponds to a specific key combination using the [keybd_event](github.com/micmonay/keybd_event) library. When a route is hit, the server simulates the key press on the host OS.
+The application initializes a local HTTP server (defaulting to port `8075`). Each defined route corresponds to a specific key combination using the [keybd_event](https://github.com/micmonay/keybd_event) library. When a route is hit, the server simulates the key press on the host OS.
 
 It automatically attempts to detect your local IP address on the "Wi-Fi" interface to make connection easier.
 
