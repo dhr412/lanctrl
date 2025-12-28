@@ -22,17 +22,16 @@ jobs:
             - name: Install ARM64 cross compiler
               run: sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu
 
-            - name: Build for linux/windows/macos (amd64 + arm64)
+            - name: Build for linux/windows (amd64 + arm64)
               run: |
                   set -e
-                  mkdir -p dist/linux dist/windows dist/darwin
+                  mkdir -p dist/linux dist/windows
 
                   TARGETS=(
                     "linux amd64"
                     "linux arm64"
                     "windows amd64"
                     "windows arm64"
-                    "darwin arm64"
                   )
 
                   for t in "${TARGETS[@]}"; do
@@ -73,12 +72,6 @@ jobs:
                   name: binary-Linux
                   path: dist/linux/*
 
-            - name: Upload macOS artifact
-              uses: actions/upload-artifact@v4
-              with:
-                  name: binary-macOS
-                  path: dist/darwin/*
-
     merge-artifacts:
         needs: build
         runs-on: ubuntu-latest
@@ -94,12 +87,6 @@ jobs:
               uses: actions/download-artifact@v4
               with:
                   name: binary-Linux
-                  path: combined-binaries
-
-            - name: Download macOS binary
-              uses: actions/download-artifact@v4
-              with:
-                  name: binary-macOS
                   path: combined-binaries
 
             - name: List combined contents
