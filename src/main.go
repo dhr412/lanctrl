@@ -6,6 +6,8 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"runtime"
+	"strings"
 	"time"
 
 	"github.com/micmonay/keybd_event"
@@ -21,8 +23,12 @@ func altTab(w http.ResponseWriter, r *http.Request) {
 	}
 	kb.HasALT(true)
 	kb.SetKeys(keybd_event.VK_TAB)
-	kb.Press()
-	kb.Release()
+	err = kb.Launching()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Alt Tabbed"))
 }
@@ -37,8 +43,12 @@ func ctrlTab(w http.ResponseWriter, r *http.Request) {
 	}
 	kb.HasCTRL(true)
 	kb.SetKeys(keybd_event.VK_TAB)
-	kb.Press()
-	kb.Release()
+	err = kb.Launching()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Ctrl Tabbed"))
 }
@@ -53,8 +63,12 @@ func altEsc(w http.ResponseWriter, r *http.Request) {
 	}
 	kb.HasALT(true)
 	kb.SetKeys(keybd_event.VK_ESC)
-	kb.Press()
-	kb.Release()
+	err = kb.Launching()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Alt Escaped"))
 }
@@ -69,8 +83,12 @@ func altf4(w http.ResponseWriter, r *http.Request) {
 	}
 	kb.HasALT(true)
 	kb.SetKeys(keybd_event.VK_F4)
-	kb.Press()
-	kb.Release()
+	err = kb.Launching()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Alt F4-ed"))
 }
@@ -85,8 +103,12 @@ func ctrlw(w http.ResponseWriter, r *http.Request) {
 	}
 	kb.HasCTRL(true)
 	kb.SetKeys(keybd_event.VK_W)
-	kb.Press()
-	kb.Release()
+	err = kb.Launching()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Ctrl W-ed"))
 }
@@ -100,8 +122,12 @@ func pressF(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	kb.SetKeys(keybd_event.VK_F)
-	kb.Press()
-	kb.Release()
+	err = kb.Launching()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("F pressed"))
 }
@@ -115,8 +141,12 @@ func pressSpace(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	kb.SetKeys(keybd_event.VK_SPACE)
-	kb.Press()
-	kb.Release()
+	err = kb.Launching()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Space pressed"))
 }
@@ -130,8 +160,12 @@ func pressK(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	kb.SetKeys(keybd_event.VK_K)
-	kb.Press()
-	kb.Release()
+	err = kb.Launching()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("K pressed"))
 }
@@ -145,10 +179,34 @@ func playPause(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	kb.SetKeys(179) // VK_MEDIA_PLAY_PAUSE
-	kb.Press()
-	kb.Release()
+	err = kb.Launching()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Play/Paused"))
+}
+
+func showDesktop(w http.ResponseWriter, r *http.Request) {
+	kb, err := keybd_event.NewKeyBonding()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(fmt.Appendf(nil, "%v", err))
+		return
+	}
+	kb.SetKeys(keybd_event.VK_D)
+	kb.HasSuper(true)
+	err = kb.Launching()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Desktoped"))
 }
 
 func logMiddleware(next http.Handler) http.Handler {
@@ -162,6 +220,8 @@ func main() {
 	portFlag := flag.Int("port", 8075, "Port to run the server on")
 	flag.Parse()
 
+	isWin := strings.Contains(strings.ToLower(runtime.GOOS), "windows")
+
 	http.Handle("/", logMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("Running"))
@@ -174,7 +234,10 @@ func main() {
 	http.Handle("/f", logMiddleware(http.HandlerFunc(pressF)))
 	http.Handle("/space", logMiddleware(http.HandlerFunc(pressSpace)))
 	http.Handle("/k", logMiddleware(http.HandlerFunc(pressK)))
-	http.Handle("/play-pause", logMiddleware(http.HandlerFunc(playPause)))
+	http.Handle("/desktop", logMiddleware(http.HandlerFunc(showDesktop)))
+	if isWin {
+		http.Handle("/play-pause", logMiddleware(http.HandlerFunc(playPause)))
+	}
 
 	var ip string
 	iface, err := net.InterfaceByName("Wi-Fi")
@@ -191,25 +254,29 @@ func main() {
 		}
 	}
 
-	fmt.Print(
-		"Endpoints:\n" +
-			"Alt+Tab: /alt-tab\n" +
-			"Ctrl+Tab: /ctrl-tab\n" +
-			"Alt+Esc: /alt-esc\n" +
-			"Alt+F4: /alt-f4\n" +
-			"Ctrl+W: /ctrl-w\n" +
-			"F: /f\n" +
-			"Space: /Space\n" +
-			"K: /k\n" +
-			"Play/Pause (Windows only): /play-pause\n" +
-			"\n",
-	)
+	endpts := "Endpoints:\n" +
+		"Alt+Tab: /alt-tab\n" +
+		"Ctrl+Tab: /ctrl-tab\n" +
+		"Alt+Esc: /alt-esc\n" +
+		"Alt+F4: /alt-f4\n" +
+		"Ctrl+W: /ctrl-w\n" +
+		"F: /f\n" +
+		"Space: /Space\n" +
+		"K: /k\n" +
+		"Desktop: /desktop\n"
+	if isWin {
+		endpts += "Play/Pause: /play-pause\n"
+	}
+
+	fmt.Print(endpts + "\n")
 
 	if ip != "" {
 		fmt.Printf("Running on http://%s:%d\n\n", ip, *portFlag)
 	} else {
 		fmt.Printf("Running on port: %d\n\n", *portFlag)
 	}
+
+	runtime.GC()
 
 	http.ListenAndServe(fmt.Sprintf(":%d", *portFlag), nil)
 }
