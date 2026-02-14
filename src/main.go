@@ -132,7 +132,7 @@ func pressF(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("F pressed"))
+	w.Write([]byte("F-ed"))
 }
 
 func pressSpace(w http.ResponseWriter, r *http.Request) {
@@ -151,7 +151,7 @@ func pressSpace(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Space pressed"))
+	w.Write([]byte("Space-ed"))
 }
 
 func pressLeft(w http.ResponseWriter, r *http.Request) {
@@ -170,7 +170,7 @@ func pressLeft(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Left arrow pressed"))
+	w.Write([]byte("Left arrowed"))
 }
 
 func pressUp(w http.ResponseWriter, r *http.Request) {
@@ -189,7 +189,7 @@ func pressUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Up arrow pressed"))
+	w.Write([]byte("Up arrowed"))
 }
 
 func pressDown(w http.ResponseWriter, r *http.Request) {
@@ -208,7 +208,7 @@ func pressDown(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Down arrow pressed"))
+	w.Write([]byte("Down arrowed"))
 }
 
 func pressRight(w http.ResponseWriter, r *http.Request) {
@@ -227,7 +227,7 @@ func pressRight(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Right arrow pressed"))
+	w.Write([]byte("Right arrowed"))
 }
 
 func pressK(w http.ResponseWriter, r *http.Request) {
@@ -246,7 +246,7 @@ func pressK(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("K pressed"))
+	w.Write([]byte("K-ed"))
 }
 
 func playPause(w http.ResponseWriter, r *http.Request) {
@@ -265,7 +265,7 @@ func playPause(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Play/Paused"))
+	w.Write([]byte("Played/Paused"))
 }
 
 func showDesktop(w http.ResponseWriter, r *http.Request) {

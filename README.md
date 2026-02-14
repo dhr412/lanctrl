@@ -59,6 +59,13 @@ curl http://<YOUR_PC_IP>:8075/<endpoint>
 or
 Visit `http://<YOUR_PC_IP>:8075/<endpoint>` in your browser
 
+### Debug Mode
+
+To enable debug mode, which prints memory statistics every 16 seconds:
+```bash
+./lanctrl -debug
+```
+
 ### Available Endpoints
 
 | Endpoint       | Action Description          |
@@ -72,4 +79,8 @@ Visit `http://<YOUR_PC_IP>:8075/<endpoint>` in your browser
 | `/space`       | Press `Space`               |
 | `/k`           | Press `K` (Youtube Pause)   |
 | `/play-pause`  | Media Play/Pause            |
+| `/left`        | Press `Left Arrow`          |
+| `/up`          | Press `Up Arrow`            |
+| `/down`        | Press `Down Arrow`          |
+| `/right`       | Press `Right Arrow`         |
 | `/`            | Health Check                |
