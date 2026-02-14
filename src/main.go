@@ -154,6 +154,82 @@ func pressSpace(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Space pressed"))
 }
 
+func pressLeft(w http.ResponseWriter, r *http.Request) {
+	kb, err := keybd_event.NewKeyBonding()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(fmt.Appendf(nil, "%v", err))
+		return
+	}
+	kb.SetKeys(37) // VK_LEFT
+	err = kb.Launching()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Left arrow pressed"))
+}
+
+func pressUp(w http.ResponseWriter, r *http.Request) {
+	kb, err := keybd_event.NewKeyBonding()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(fmt.Appendf(nil, "%v", err))
+		return
+	}
+	kb.SetKeys(38) // VK_UP
+	err = kb.Launching()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Up arrow pressed"))
+}
+
+func pressDown(w http.ResponseWriter, r *http.Request) {
+	kb, err := keybd_event.NewKeyBonding()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(fmt.Appendf(nil, "%v", err))
+		return
+	}
+	kb.SetKeys(40) // VK_DOWN
+	err = kb.Launching()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Down arrow pressed"))
+}
+
+func pressRight(w http.ResponseWriter, r *http.Request) {
+	kb, err := keybd_event.NewKeyBonding()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(fmt.Appendf(nil, "%v", err))
+		return
+	}
+	kb.SetKeys(39) // VK_RIGHT
+	err = kb.Launching()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Right arrow pressed"))
+}
+
 func pressK(w http.ResponseWriter, r *http.Request) {
 	kb, err := keybd_event.NewKeyBonding()
 	if err != nil {
@@ -221,7 +297,20 @@ func logMiddleware(next http.Handler) http.Handler {
 
 func main() {
 	portFlag := flag.Int("port", 8075, "Port to run the server on")
+	debugFlag := flag.Bool("debug", false, "Enable debug stats")
 	flag.Parse()
+
+	if *debugFlag {
+		go func() {
+			for range time.Tick(16 * time.Second) {
+				runtime.GC()
+				var m runtime.MemStats
+				runtime.ReadMemStats(&m)
+				fmt.Printf("Heap: %d MB  GC pauses: last=%d ns\n",
+					m.HeapAlloc>>20, m.PauseTotalNs)
+			}
+		}()
+	}
 
 	isWin := strings.Contains(strings.ToLower(runtime.GOOS), "windows")
 
@@ -236,6 +325,10 @@ func main() {
 	http.Handle("/ctrl-w", logMiddleware(http.HandlerFunc(ctrlw)))
 	http.Handle("/f", logMiddleware(http.HandlerFunc(pressF)))
 	http.Handle("/space", logMiddleware(http.HandlerFunc(pressSpace)))
+	http.Handle("/left", logMiddleware(http.HandlerFunc(pressLeft)))
+	http.Handle("/up", logMiddleware(http.HandlerFunc(pressUp)))
+	http.Handle("/down", logMiddleware(http.HandlerFunc(pressDown)))
+	http.Handle("/right", logMiddleware(http.HandlerFunc(pressRight)))
 	http.Handle("/k", logMiddleware(http.HandlerFunc(pressK)))
 	http.Handle("/desktop", logMiddleware(http.HandlerFunc(showDesktop)))
 	if isWin {
@@ -264,7 +357,11 @@ func main() {
 		"Alt+F4: /alt-f4\n" +
 		"Ctrl+W: /ctrl-w\n" +
 		"F: /f\n" +
-		"Space: /Space\n" +
+		"Space: /space\n" +
+		"Left arrow: /left\n" +
+		"Up arrow: /up\n" +
+		"Down arrow: /down\n" +
+		"Right arrow: /right\n" +
 		"K: /k\n" +
 		"Desktop: /desktop\n"
 	if isWin {
