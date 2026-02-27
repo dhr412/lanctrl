@@ -162,7 +162,7 @@ func pressLeft(w http.ResponseWriter, r *http.Request) {
 		w.Write(fmt.Appendf(nil, "%v", err))
 		return
 	}
-	kb.SetKeys(37) // VK_LEFT
+	kb.SetKeys(keybd_event.VK_LEFT)
 	err = kb.Launching()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
@@ -181,7 +181,7 @@ func pressUp(w http.ResponseWriter, r *http.Request) {
 		w.Write(fmt.Appendf(nil, "%v", err))
 		return
 	}
-	kb.SetKeys(38) // VK_UP
+	kb.SetKeys(keybd_event.VK_UP)
 	err = kb.Launching()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
@@ -200,7 +200,7 @@ func pressDown(w http.ResponseWriter, r *http.Request) {
 		w.Write(fmt.Appendf(nil, "%v", err))
 		return
 	}
-	kb.SetKeys(40) // VK_DOWN
+	kb.SetKeys(keybd_event.VK_DOWN)
 	err = kb.Launching()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
@@ -219,7 +219,7 @@ func pressRight(w http.ResponseWriter, r *http.Request) {
 		w.Write(fmt.Appendf(nil, "%v", err))
 		return
 	}
-	kb.SetKeys(39) // VK_RIGHT
+	kb.SetKeys(keybd_event.VK_RIGHT)
 	err = kb.Launching()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
@@ -257,7 +257,7 @@ func playPause(w http.ResponseWriter, r *http.Request) {
 		w.Write(fmt.Appendf(nil, "%v", err))
 		return
 	}
-	kb.SetKeys(179) // VK_MEDIA_PLAY_PAUSE
+	kb.SetKeys(179)
 	err = kb.Launching()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
